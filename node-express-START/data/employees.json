@@ -1,4 +1,4 @@
-module.exports = employees = [
+[
         {
             "id": "b6cbb88f-aeac-4f1a-8a12-f8c39ee9ece6",
             "first_name": "Kala",

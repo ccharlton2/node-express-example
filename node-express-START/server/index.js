@@ -1,38 +1,55 @@
-// Express Application
-// ES Modules export - import (work in browsers)
-// bundler
-// Node uses Common.js module.exports = const/func - require (don't work in browsers)
+require('dotenv').config()
 const express = require('express');
-const path = require('path');
-const app = express();
-const PORT = 3000;
+const path = require('path')
+ 
 
-// setup express to serve static html pages
-app.use(express.static(path.join(__dirname, '../public')));
+const app = express()
 
-// http requests use the GET method
-// http method get built into express
-// app.get(endpoint. (cb)) cb 3 params req, res, next
+ 
+// .env contains environmental vars never upload to git...
+const PORT =  process.env.PORT || 5000
 
-// API for employees
-// baseURL api/v1/employees
-app.get('/api/v1/employees', (req, res, next) => {
-    res.send({name:"chris"});
+app.use(express.urlencoded({extended:true}))
+app.use(express.json())
+ 
+// Serving Static Web Files Middleware
+const staticOpitons ={
+    dotfiles: 'ignore',
+    extensions: ['htm', 'html']
+}
+app.use(express.static(path.join(__dirname, '../client'), staticOpitons))
+
+app.post('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dashboard.html'));
 })
 
-app.get('/login', (req, res, next) => {
-    res.send('this is going to be in my login page');
+app.post('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/register.html'));
 })
 
-app.get('/signup', (req, res, next) => {
-    res.send('this is going to be in my signup page');
+app.post('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dashboard.html'));
 })
 
-// public 404 page file not found
-app.use((req, res, next) => {
-    res.sendFile(path.join(__dirname, '../public/404.html'))
+app.post('/users', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dashboard.html'));
+})
+ 
+//Our API Starts Here
+app.get('/api/v1/employees', (req, res)=>{
+   res.send("EMPLOYEE MANAGER API")
 })
 
-app.listen('3000', () => {
-    console.log(`SERVER IS RUNNING ON -------- http://localhost:${PORT}`);
-});
+// if a pace doesn't match any of our routes 
+app.use((req, res)=>{
+    res.status(404).sendFile(path.join(__dirname, '../client/404.html'))
+})
+ 
+// server listenting on port
+// .env specifies what port to listen on :3000
+// if you enter a different port in then use it when
+// making your api requests.
+// connection url to the server http://localhost:3000
+app.listen(PORT, ()=> {
+    console.log(`Your Server Is Running On---------> http://localhost:${PORT}`)
+})
